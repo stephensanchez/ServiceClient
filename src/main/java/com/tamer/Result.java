@@ -5,18 +5,30 @@ package com.tamer;
  * {@link com.tamer.service.Service}. For this example, I have only created two
  * possible conditions, but you could imagine any number of failure states.
  */
-public enum Result {
+public class Result {
 
-    PASS,
-    FAIL;
+    public enum Status {
+        PASS,
+        FAIL
+    }
 
+    private Status status;
     private Object result;
 
-    public void setResult(Object result) {
+    public Result(Status status) {
+        this(status, null);
+    }
+
+    public Result(Status status, Object result) {
+        this.status = status;
         this.result = result;
     }
 
     public Object getResult() {
         return result;
+    }
+
+    public Object getStatus() {
+        return status;
     }
 }
