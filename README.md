@@ -1,4 +1,4 @@
-tamer
+Service-Client Exercise
 =====
 
 This project contains all the classes and tests to prove the concept of a 
