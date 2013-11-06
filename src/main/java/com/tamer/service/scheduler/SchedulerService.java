@@ -1,8 +1,10 @@
-package com.tamer.service;
+package com.tamer.service.scheduler;
 
 import com.tamer.Job;
 import com.tamer.Result;
 import com.tamer.client.Client;
+import com.tamer.service.Service;
+import com.tamer.service.ServiceException;
 
 import java.util.ArrayList;
 import java.util.List;

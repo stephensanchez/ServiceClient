@@ -1,4 +1,4 @@
-package com.tamer.math;
+package com.tamer.client.math;
 
 import com.tamer.Job;
 import com.tamer.Result;

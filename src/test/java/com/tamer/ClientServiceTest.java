@@ -1,8 +1,7 @@
 package com.tamer;
 
-import com.tamer.client.Client;
-import com.tamer.math.MathClient;
-import com.tamer.service.SchedulerService;
+import com.tamer.client.math.MathClient;
+import com.tamer.service.scheduler.SchedulerService;
 import com.tamer.service.Service;
 import junit.framework.Assert;
 import org.junit.Test;

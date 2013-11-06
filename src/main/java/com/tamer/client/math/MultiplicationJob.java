@@ -1,27 +1,26 @@
-package com.tamer.math;
+package com.tamer.client.math;
 
 import com.tamer.Job;
 import com.tamer.Result;
 
 /**
- * Simple job to add values together.
- * @author ssanchez
+ * A {@link Job} that multiples values.
  */
-public class AdditionJob implements Job {
+public class MultiplicationJob implements Job {
+    private int[] values;
 
-    int[] values;
-
-    public AdditionJob(int ... values) {
+    public MultiplicationJob(int ... values) {
         this.values = values;
     }
+
     public Result execute() {
         if (values == null) {
             return new Result(Result.Status.FAIL);
         }
 
-        int total = 0;
+        int total = 1;
         for (int value : values) {
-            total += value;
+            total = total * value;
         }
 
         return new Result(Result.Status.PASS, total);
