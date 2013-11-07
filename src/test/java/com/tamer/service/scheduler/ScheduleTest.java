@@ -12,6 +12,8 @@ public class ScheduleTest {
 
     @Test
     public void testSchedule() throws Exception {
+        // Create a new schedule and submit a number of jobs. This will not be
+        // the order in which they are executed by the Schedule.
         Schedule<Integer, String> schedule = new Schedule<Integer, String>();
         schedule.add(1, "clientOne");
         schedule.add(57, "clientOne");
@@ -19,11 +21,15 @@ public class ScheduleTest {
         schedule.add(210, "clientTwo");
         schedule.add(3, "clientThree");
 
+        // The proper order of the schedule will essentially rotate the clients.
         assertNext(schedule, 1, "clientOne");
         assertNext(schedule, 2, "clientTwo");
         assertNext(schedule, 3, "clientThree");
         assertNext(schedule, 57, "clientOne");
         assertNext(schedule, 210, "clientTwo");
+
+        // Our schedule is empty.
+        Assert.assertFalse(schedule.hasNext());
     }
 
     private void assertNext(Schedule schedule, int job, String client) throws InterruptedException {

@@ -17,17 +17,27 @@ import com.tamer.service.ServiceException;
 public class SchedulerService implements Service {
 
     private Schedule<Job, Client> schedule = new Schedule<Job, Client>();
+    private volatile Thread worker = new Thread(new ServiceWorker());
 
     public SchedulerService() {
-        // TODO: Set up a slave thread to execute all jobs.
+        worker.isDaemon();
     }
 
     public void queueJob(Job job, Client client) throws ServiceException {
         schedule.add(job, client);
 
-        // TODO: Remove this once slave thread is created.
-        Result result = job.execute();
-        client.addResult(result);
+        // Wake up, there's work to do.
+        if (!worker.isAlive()) worker.start();
+    }
+
+    private class ServiceWorker implements Runnable {
+
+        public void run() {
+            while (schedule.hasNext()) {
+                Task<Job, Client> task = schedule.next();
+                task.getClient().addResult(task.getJob().execute());
+            }
+        }
     }
 
 

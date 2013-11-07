@@ -28,10 +28,13 @@ public class ClientServiceTest {
         MathClient clientTwo = new MathClient(service, "Two");
 
         clientOne.add(1, 2, 3, 4, 5, 6);
-        clientTwo.add(7, 8, 9, 10, 11, 12);
-
         clientOne.multiply(1, 2, 3, 4, 5, 6);
+        clientTwo.add(7, 8, 9, 10, 11, 12);
         clientTwo.multiply(7, 8, 9, 10, 11, 12);
+
+        // Yeah, not ideal. I could loop over a shorter interval but this seems
+        // OK for the current design.
+        Thread.sleep(2000);
 
         List<Result> resultsOne = clientOne.getResults();
         List<Result> resultsTwo = clientTwo.getResults();
