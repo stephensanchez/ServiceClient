@@ -1,7 +1,6 @@
 package com.tamer.service.scheduler;
 
 import com.tamer.Job;
-import com.tamer.Result;
 import com.tamer.client.Client;
 import com.tamer.service.Service;
 import com.tamer.service.ServiceException;
@@ -16,26 +15,36 @@ import com.tamer.service.ServiceException;
  */
 public class SchedulerService implements Service {
 
-    private Schedule<Job, Client> schedule = new Schedule<Job, Client>();
+    private Schedule<Job, Client> schedule =
+            new SynchronizedSchedule<Job, Client>();
+
+    // Given a single worker executing against the schedule, all jobs will be
+    // executed synchronously.
     private volatile Thread worker = new Thread(new ServiceWorker());
 
     public SchedulerService() {
         worker.isDaemon();
+        worker.start();
     }
 
     public void queueJob(Job job, Client client) throws ServiceException {
         schedule.add(job, client);
-
-        // Wake up, there's work to do.
-        if (!worker.isAlive()) worker.start();
     }
 
     private class ServiceWorker implements Runnable {
 
         public void run() {
-            while (schedule.hasNext()) {
-                Task<Job, Client> task = schedule.next();
-                task.getClient().addResult(task.getJob().execute());
+            while (true) {
+                if (schedule.hasNext()) {
+                    Task<Job, Client> task = schedule.next();
+                    task.getClient().addResult(task.getJob().execute());
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        worker.interrupt();
+                    }
+                }
             }
         }
     }

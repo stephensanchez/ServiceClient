@@ -8,7 +8,7 @@ public class Task<T, V> {
     private final V client;
     private final T job;
 
-    public Task(V client, T job) {
+    public Task(T job, V client) {
         this.client = client;
         this.job = job;
     }

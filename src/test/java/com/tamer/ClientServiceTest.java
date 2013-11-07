@@ -39,11 +39,23 @@ public class ClientServiceTest {
         List<Result> resultsOne = clientOne.getResults();
         List<Result> resultsTwo = clientTwo.getResults();
 
+        Assert.assertFalse(resultsOne.isEmpty());
+        Assert.assertFalse(resultsTwo.isEmpty());
+
         Assert.assertEquals(21, resultsOne.get(0).getResult());
         Assert.assertEquals(720, resultsOne.get(1).getResult());
 
         Assert.assertEquals(57, resultsTwo.get(0).getResult());
         Assert.assertEquals(665280, resultsTwo.get(1).getResult());
+
+        // Let's ensure our failure pass works, and that the worker thread
+        // wakes up to perform one last job.
+        clientOne.add(null);
+
+        Thread.sleep(2000);
+
+        resultsOne = clientOne.getResults();
+        Assert.assertEquals(Result.Status.FAIL, resultsOne.get(2).getStatus());
     }
 
 }

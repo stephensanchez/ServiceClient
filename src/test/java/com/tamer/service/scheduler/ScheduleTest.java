@@ -14,7 +14,7 @@ public class ScheduleTest {
     public void testSchedule() throws Exception {
         // Create a new schedule and submit a number of jobs. This will not be
         // the order in which they are executed by the Schedule.
-        Schedule<Integer, String> schedule = new Schedule<Integer, String>();
+        Schedule<Integer, String> schedule = new SynchronizedSchedule<Integer, String>();
         schedule.add(1, "clientOne");
         schedule.add(57, "clientOne");
         schedule.add(2, "clientTwo");
