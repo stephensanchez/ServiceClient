@@ -1,6 +1,6 @@
 package com.tamer;
 
-import com.tamer.client.math.MathClient;
+import com.tamer.client.math.*;
 import com.tamer.service.scheduler.SchedulerService;
 import com.tamer.service.Service;
 import junit.framework.Assert;
@@ -24,8 +24,8 @@ public class ClientServiceTest {
     @Test
     public void testClientService() throws Exception {
         Service service = new SchedulerService();
-        MathClient clientOne = new MathClient(service);
-        MathClient clientTwo = new MathClient(service);
+        MathClient clientOne = new MathClient(service, "One");
+        MathClient clientTwo = new MathClient(service, "Two");
 
         clientOne.add(1, 2, 3, 4, 5, 6);
         clientTwo.add(7, 8, 9, 10, 11, 12);

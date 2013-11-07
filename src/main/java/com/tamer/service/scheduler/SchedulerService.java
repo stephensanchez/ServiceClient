@@ -19,17 +19,14 @@ import java.util.List;
  */
 public class SchedulerService implements Service {
 
-    // TODO: This submission will begin with a dummy class to instantiate the test.
-
-    // TODO: Really, really replace this.
-    private List<Job> jobs = new ArrayList<Job>();
+    private Schedule schedule = new Schedule();
 
     public SchedulerService() {
         // TODO: Set up a slave thread to execute all jobs.
     }
 
     public void queueJob(Job job, Client client) throws ServiceException {
-        jobs.add(job);
+        schedule.addJob(job, client);
 
         // TODO: Remove this once slave thread is created.
         Result result = job.execute();

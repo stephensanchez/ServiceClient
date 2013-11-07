@@ -15,17 +15,22 @@ import java.util.List;
  */
 public class MathClient implements Client {
 
+    private String ID;
     private Service service;
     private List<Result> results = new ArrayList<Result>();
 
-    public MathClient(Service service) {
+    public MathClient(Service service, String ID) {
         this.service = service;
+        this.ID = ID;
+    }
+
+    public String getID() {
+        return ID;
     }
 
     public void add(int ... values) throws ServiceException {
         Job addJob = new AdditionJob(values);
         service.queueJob(addJob, this);
-
     }
 
     public void multiply(int ... values) throws ServiceException {

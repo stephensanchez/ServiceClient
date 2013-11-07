@@ -15,6 +15,12 @@ import java.util.List;
 public interface Client {
 
     /**
+     * Returns the unique ID of this Client.
+     * @return The ID of this client.
+     */
+    public String getID();
+
+    /**
      * Returns a result from the {@link Service}
      * @param result The result of a {@link Job} performed by the Service.
      */
