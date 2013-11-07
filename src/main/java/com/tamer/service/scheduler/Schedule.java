@@ -1,8 +1,5 @@
 package com.tamer.service.scheduler;
 
-import com.tamer.Job;
-import com.tamer.client.Client;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -13,22 +10,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * and the order in which the jobs for that client were requested; prioritizing
  * the most neglected client foremost, and earliest submitted job therein.
  */
-public class Schedule {
+public class Schedule<T,V> {
 
-    List<WeightedClient> clients = new ArrayList<WeightedClient>();
+    List<WeightedClient<T, V>> clients = new ArrayList<WeightedClient<T, V>>();
 
-    Comparator<WeightedClient> lastPulledComparator =
-            new Comparator<WeightedClient>() {
-        public int compare(WeightedClient weightedClient,
-                           WeightedClient weightedClient2) {
-            return weightedClient.lastPulled.compareTo(weightedClient2.lastPulled);
-        }
-    };
-
-    public void addJob(Job job, Client client) {
-        WeightedClient wClient = new WeightedClient(client, job);
+    public void add(T t, V v) {
+        WeightedClient<T, V> wClient = new WeightedClient<T, V>(v, t);
         if (clients.contains(wClient)) {
-            clients.get(clients.indexOf(wClient)).addJob(job);
+            clients.get(clients.indexOf(wClient)).addJob(t);
         } else {
             clients.add(wClient);
         }
@@ -36,30 +25,26 @@ public class Schedule {
 
     // No client will be inserted into the Schedule without a job, and any
     // Client without a remaining job is removed.
-    public boolean hasJobs() {
+    public boolean hasNext() {
         return !clients.isEmpty();
     }
 
-    public Task next() {
-        Collections.sort(clients, lastPulledComparator);
-        WeightedClient wClient = clients.get(0);
-        Job nextJob = wClient.nextJob();
+    public Task<T, V> next() {
+        WeightedClient<T, V> wClient = clients.remove(0);
+        T nextJob = wClient.nextJob();
 
         // Knowing we just pulled a job, update the time it was last pulled.
         // If the client no longer has any jobs, remove it from the schedule.
         if (wClient.hasJobs())
-            wClient.lastPulled = new Date();
-        else
-            clients.remove(wClient);
+            clients.add(wClient);
 
-        return new Task(wClient.client, nextJob);
+        return new Task<T, V>(wClient.client, nextJob);
     }
 
-    private class WeightedClient {
+    private class WeightedClient<T,V> {
 
-        private final Client client;
-        private Queue<Job> jobs = new ConcurrentLinkedQueue<Job>();
-        private Date lastPulled = new Date(); // intentionally de-prioritize new clients.
+        private final V client;
+        private Queue<T> jobs = new ConcurrentLinkedQueue<T>();
 
         /**
          * Every Client added to the schedule must be associated with at least
@@ -67,16 +52,16 @@ public class Schedule {
          * @param client The associated, actual client
          * @param job The first job in a new Weighted Client.
          */
-        protected WeightedClient(Client client, Job job) {
+        protected WeightedClient(V client, T job) {
             this.client = client;
             addJob(job);
         }
 
-        protected void addJob(Job job) {
+        protected void addJob(T job) {
             jobs.offer(job);
         }
 
-        protected Job nextJob() {
+        protected T nextJob() {
             return jobs.poll();
         }
 
@@ -86,7 +71,7 @@ public class Schedule {
 
         @Override
         public boolean equals(Object o) {
-            return o instanceof WeightedClient && ((WeightedClient)o).client == client;
+            return o instanceof WeightedClient && ((WeightedClient<T, V>)o).client == client;
         }
     }
 

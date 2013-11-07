@@ -1,18 +1,23 @@
 package com.tamer.service.scheduler;
 
-import com.tamer.Job;
-import com.tamer.client.Client;
-
 /**
  * Simple Tuple
  */
-public class Task {
+public class Task<T, V> {
 
-    private final Client client;
-    private final Job job;
+    private final V client;
+    private final T job;
 
-    public Task(Client client, Job job) {
+    public Task(V client, T job) {
         this.client = client;
         this.job = job;
+    }
+
+    public T getJob() {
+        return job;
+    }
+
+    public V getClient() {
+        return client;
     }
 }
